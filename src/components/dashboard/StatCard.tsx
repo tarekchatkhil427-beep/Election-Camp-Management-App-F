@@ -30,7 +30,7 @@ export function StatCard({
   const content = (
     <div
       className={cn(
-        "group relative overflow-hidden bg-card rounded-xl border border-border p-3 sm:p-5 shadow-sm transition-all hover:shadow-md",
+        "group relative overflow-hidden bg-card rounded-xl border border-border p-2 sm:p-4 py-1.5 sm:py-3 shadow-sm transition-all hover:shadow-md",
         "flex flex-col justify-between h-full",
         className
       )}
@@ -51,7 +51,7 @@ export function StatCard({
       </div>
 
       {(description || trend) && (
-        <div className="mt-2 sm:mt-4 flex flex-wrap items-center text-[10px] sm:text-sm">
+        <div className="mt-1 sm:mt-3 flex flex-wrap items-center text-[10px] sm:text-sm">
           {trend && (
             <span
               className={cn(

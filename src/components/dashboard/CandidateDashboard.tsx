@@ -27,7 +27,7 @@ export function CandidateDashboard() {
         <p className="text-muted-foreground mt-1">{t('High-level metrics and operational status.')}</p>
       </div>
 
-      <div className="grid gap-2 sm:gap-4 grid-cols-4 sm:grid-cols-4 lg:grid-cols-4">
+      <div className="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         <StatCard 
           title={t('Total Wards')}
           value="12" 
@@ -62,7 +62,7 @@ export function CandidateDashboard() {
         />
       </div>
 
-      <div className="grid gap-2 sm:gap-4 grid-cols-4 sm:grid-cols-4 lg:grid-cols-4">
+      <div className="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         <StatCard 
           title={t('Active Tasks')}
           value="128" 

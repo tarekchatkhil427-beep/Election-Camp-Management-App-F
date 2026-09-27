@@ -30,7 +30,7 @@ export function WardCoordDashboard() {
         </div>
       </div>
 
-      <div className="grid gap-2 sm:gap-4 grid-cols-4 sm:grid-cols-4 lg:grid-cols-4">
+      <div className="grid gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         <StatCard 
           title="Houses" 
           value="12" 
