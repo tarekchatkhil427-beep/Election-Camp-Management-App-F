@@ -65,6 +65,7 @@ export default function VoterDatabase() {
           {t('Ward')} <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      meta: { className: "hidden md:table-cell" }
     },
     {
       accessorKey: "houseName",
@@ -73,6 +74,7 @@ export default function VoterDatabase() {
           {t('House')} <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      meta: { className: "hidden md:table-cell" }
     },
     {
       accessorKey: "age",
@@ -81,14 +83,17 @@ export default function VoterDatabase() {
           {t('Age')} <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      meta: { className: "hidden lg:table-cell" }
     },
     {
       accessorKey: "gender",
       header: t('Gender') || "Gender",
+      meta: { className: "hidden lg:table-cell" }
     },
     {
       accessorKey: "party",
       header: t('Party') || "Party",
+      meta: { className: "hidden md:table-cell" }
     },
     {
       accessorKey: "mobile",
@@ -97,6 +102,7 @@ export default function VoterDatabase() {
     {
       accessorKey: "contactVolunteer",
       header: t('Contact Volunteer') || "Contact Volunteer",
+      meta: { className: "hidden lg:table-cell" }
     },
     {
       accessorKey: "status",
