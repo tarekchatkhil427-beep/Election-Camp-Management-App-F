@@ -14,8 +14,8 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['favicon.svg', 'icons.svg', 'icon-192.png', 'icon-512.png'],
       manifest: {
-        name: 'Election Camp Management',
-        short_name: 'Camp App',
+        name: 'CampaignOS',
+        short_name: 'CampaignOS',
         description: 'Election Camp Management App',
         theme_color: '#09090b',
         background_color: '#ffffff',
