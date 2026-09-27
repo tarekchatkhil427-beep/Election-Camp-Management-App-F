@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { useCampaignStore } from '@/store/campaignStore';
+import { useAuth } from '@/auth/MockAuthProvider';
 
 // Mock Data
 type TabType = 'dms' | 'directory' | 'groups' | 'announcements';
@@ -18,7 +19,7 @@ const mockDMs = [
   { id: 'dm-3', name: 'Alif Hossain', role: 'Volunteer', lastMessage: 'I have finished distributing the flyers.', time: 'Yesterday', unread: 0, online: true },
 ];
 
-const mockGroups = [
+const initialGroups = [
   { id: 'g-1', name: 'Campaign HQ', role: 'Global', lastMessage: 'Jane: Meeting at 5 PM today.', time: '9:15 AM', unread: 5 },
   { id: 'g-2', name: 'Ward 01 Team', role: 'Ward 01', lastMessage: 'Rahim: We need more banners.', time: 'Yesterday', unread: 0 },
   { id: 'g-3', name: 'House Coordinators', role: 'Operations', lastMessage: 'System: Weekly report generated.', time: 'Mon', unread: 0 },
@@ -46,12 +47,16 @@ const mockChatHistory = [
 
 export default function MessagesDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('directory');
+  const [groups, setGroups] = useState(initialGroups);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   
   const { users } = useCampaignStore();
+  const { user } = useAuth();
+  
+  const isAdmin = ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR'].includes(user?.role || '');
 
   // Mock typing indicator randomly
   useEffect(() => {
@@ -75,7 +80,7 @@ export default function MessagesDashboard() {
       }
       return mockDMs.find(c => c.id === activeChatId);
     }
-    if (activeTab === 'groups') return mockGroups.find(c => c.id === activeChatId);
+    if (activeTab === 'groups') return groups.find(c => c.id === activeChatId);
     if (activeTab === 'announcements') return mockAnnouncements.find(c => c.id === activeChatId);
     return null;
   };
@@ -125,9 +130,14 @@ export default function MessagesDashboard() {
             {activeTab === 'dms' && mockDMs.map(chat => (
               <ChatItem key={chat.id} data={chat} isActive={activeChatId === chat.id} onClick={() => setActiveChatId(chat.id)} icon={<User className="h-5 w-5" />} />
             ))}
-            {activeTab === 'groups' && mockGroups.map(chat => (
+            {activeTab === 'groups' && groups.map(chat => (
               <ChatItem key={chat.id} data={chat} isActive={activeChatId === chat.id} onClick={() => setActiveChatId(chat.id)} icon={<Users className="h-5 w-5" />} />
             ))}
+            {activeTab === 'groups' && isAdmin && (
+              <div className="p-4 border-t border-border mt-auto">
+                <AddGroupModal onAdd={(newGroup) => setGroups(prev => [...prev, newGroup])} />
+              </div>
+            )}
             {activeTab === 'announcements' && mockAnnouncements.map(ann => (
               <ChatItem key={ann.id} data={{ ...ann, name: ann.title, lastMessage: ann.message }} isActive={activeChatId === ann.id} onClick={() => setActiveChatId(ann.id)} icon={<Megaphone className="h-5 w-5" />} />
             ))}
@@ -329,6 +339,61 @@ function AnnouncementDetail({ ann, onBack }: { ann: typeof mockAnnouncements[0],
         </div>
       </div>
     </div>
+  );
+}
+
+function AddGroupModal({ onAdd }: { onAdd: (g: any) => void }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [role, setRole] = useState('Custom Group');
+
+  const handleSave = () => {
+    if (!name.trim()) return;
+    onAdd({
+      id: `g-${Date.now()}`,
+      name,
+      role,
+      lastMessage: 'Group created.',
+      time: 'Just now',
+      unread: 0
+    });
+    setOpen(false);
+    setName('');
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="w-full gap-2"><Users className="h-4 w-4" /> New Group</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Create New Group</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="space-y-2">
+            <Label>Group Name</Label>
+            <Input 
+              placeholder="e.g. Ward 04 Core Team" 
+              value={name}
+              onChange={e => setName(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Group Purpose / Role</Label>
+            <Input 
+              placeholder="e.g. Operations" 
+              value={role}
+              onChange={e => setRole(e.target.value)}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={handleSave}>Create Group</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
