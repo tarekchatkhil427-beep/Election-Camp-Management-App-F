@@ -210,44 +210,48 @@ export default function VoterDatabase() {
             }
           }}
           toolbarFilters={
-            <>
-              <select value={wardFilter} onChange={e => { setWardFilter(e.target.value); setHouseFilter(''); }} className="h-9 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                <option value="">All Wards</option>
-                {wards.map(w => (
-                  <option key={w.id} value={w.id}>{w.name}</option>
-                ))}
-              </select>
-              <select value={houseFilter} onChange={e => setHouseFilter(e.target.value)} className="h-9 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                <option value="">All Houses</option>
-                {houses.filter(h => !wardFilter || h.wardId === wardFilter).map(h => (
-                  <option key={h.id} value={h.id}>{h.name}</option>
-                ))}
-              </select>
-              <select value={genderFilter} onChange={e => setGenderFilter(e.target.value)} className="h-9 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                <option value="">All Genders</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-              <select value={partyFilter} onChange={e => setPartyFilter(e.target.value)} className="h-9 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                <option value="">All Parties</option>
-                <option value="support">Support</option>
-                <option value="neutral">Neutral</option>
-                <option value="oppose">Oppose</option>
-              </select>
-              <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="h-9 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                <option value="">All Statuses</option>
-                <option value="approved">Approved</option>
-                <option value="pending">Pending</option>
-                <option value="rejected">Rejected</option>
-              </select>
-              {hasActiveFilters && (
-                <Button variant="ghost" onClick={handleResetFilters} className="h-9 px-2 text-muted-foreground hover:text-foreground">
-                  <X className="h-4 w-4 mr-2" /> Reset
-                </Button>
-              )}
-            </>
-          }
-          toolbarActions={
+              <div className="flex flex-col gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                <div className="grid grid-cols-3 gap-2 w-full">
+                  <select value={wardFilter} onChange={e => { setWardFilter(e.target.value); setHouseFilter(''); }} className="h-8 rounded-lg border border-border bg-muted/50 px-2 text-[11px] sm:text-xs font-medium focus:ring-1 focus:ring-primary truncate">
+                    <option value="">Ward</option>
+                    {wards.map(w => (
+                      <option key={w.id} value={w.id}>{w.name}</option>
+                    ))}
+                  </select>
+                  <select value={houseFilter} onChange={e => setHouseFilter(e.target.value)} className="h-8 rounded-lg border border-border bg-muted/50 px-2 text-[11px] sm:text-xs font-medium focus:ring-1 focus:ring-primary truncate">
+                    <option value="">House</option>
+                    {houses.filter(h => !wardFilter || h.wardId === wardFilter).map(h => (
+                      <option key={h.id} value={h.id}>{h.name}</option>
+                    ))}
+                  </select>
+                  <select value={genderFilter} onChange={e => setGenderFilter(e.target.value)} className="h-8 rounded-lg border border-border bg-muted/50 px-2 text-[11px] sm:text-xs font-medium focus:ring-1 focus:ring-primary truncate">
+                    <option value="">Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+                <div className="grid grid-cols-[1fr_1fr_auto] gap-2 w-full">
+                  <select value={partyFilter} onChange={e => setPartyFilter(e.target.value)} className="h-8 rounded-lg border border-border bg-muted/50 px-2 text-[11px] sm:text-xs font-medium focus:ring-1 focus:ring-primary truncate">
+                    <option value="">Party</option>
+                    <option value="support">Support</option>
+                    <option value="neutral">Neutral</option>
+                    <option value="oppose">Oppose</option>
+                  </select>
+                  <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="h-8 rounded-lg border border-border bg-muted/50 px-2 text-[11px] sm:text-xs font-medium focus:ring-1 focus:ring-primary truncate">
+                    <option value="">Status</option>
+                    <option value="approved">Approved</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                  {hasActiveFilters && (
+                    <Button variant="ghost" size="sm" onClick={handleResetFilters} className="h-8 px-2 text-[11px] sm:text-xs text-muted-foreground hover:text-foreground">
+                      <X className="h-3 w-3 mr-1" /> Reset
+                    </Button>
+                  )}
+                </div>
+              </div>
+            }
+            toolbarActions={
             <ExportModal recordCount={exportRecordCount} />
           }
         />
