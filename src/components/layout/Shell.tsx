@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -13,8 +13,12 @@ import {
   Menu,
   Search,
   Plus,
-  Share2
+  Share2,
+  Moon,
+  Sun,
+  Globe
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth, mockUsers } from '@/auth/MockAuthProvider';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -23,21 +27,35 @@ import { CommandPalette } from '@/components/layout/CommandPalette';
 import { MobileNav } from '@/components/layout/MobileNav';
 
 export function Shell() {
+  const { t, i18n } = useTranslation();
   const { user, switchUser } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    root.classList.add(theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  const toggleLanguage = () => {
+    const nextLang = i18n.language === 'en' ? 'bn' : 'en';
+    i18n.changeLanguage(nextLang);
+  };
 
   const navigation = [
-    { name: 'Dashboard', to: '/', icon: LayoutDashboard },
-    { name: 'Org Tree', to: '/organization', icon: Users, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR', 'WARD_COORDINATOR', 'HOUSE_COORDINATOR'] },
-    { name: 'Org Settings', to: '/organization/settings', icon: Settings, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR'] },
-    { name: 'Voter Database', to: '/voters', icon: Database, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR', 'WARD_COORDINATOR'] },
-    { name: 'Tasks & Events', to: user?.role === 'VOLUNTEER' ? '/tasks/my-tasks' : '/tasks', icon: CheckSquare },
-    { name: 'Community Issues', to: '/issues', icon: AlertCircle },
-    { name: 'Social Media', to: '/social', icon: Share2, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR'] },
-    { name: 'Messages', to: '/messages', icon: MessageSquare },
-    { name: 'Activity', to: '/activity', icon: Activity, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR', 'WARD_COORDINATOR'] },
-    { name: 'Settings', to: '/settings', icon: Settings, roles: ['SUPER_ADMIN', 'CAMPAIGN_DIRECTOR'] },
+    { name: t('Dashboard'), to: '/', icon: LayoutDashboard },
+    { name: t('Org Tree'), to: '/organization', icon: Users, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR', 'WARD_COORDINATOR', 'HOUSE_COORDINATOR'] },
+    { name: t('Org Settings'), to: '/organization/settings', icon: Settings, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR'] },
+    { name: t('Voter Database'), to: '/voters', icon: Database, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR', 'WARD_COORDINATOR'] },
+    { name: t('Tasks & Events'), to: user?.role === 'VOLUNTEER' ? '/tasks/my-tasks' : '/tasks', icon: CheckSquare },
+    { name: t('Community Issues'), to: '/issues', icon: AlertCircle },
+    { name: t('Social Media'), to: '/social', icon: Share2, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR'] },
+    { name: t('Messages'), to: '/messages', icon: MessageSquare },
+    { name: t('Activity'), to: '/activity', icon: Activity, roles: ['SUPER_ADMIN', 'CANDIDATE', 'CAMPAIGN_DIRECTOR', 'WARD_COORDINATOR'] },
+    { name: t('Settings'), to: '/settings', icon: Settings, roles: ['SUPER_ADMIN', 'CAMPAIGN_DIRECTOR'] },
   ].filter(item => !item.roles || (user && item.roles.includes(user.role)));
 
   return (
@@ -56,7 +74,7 @@ export function Shell() {
           </Button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
           {navigation.map((item) => (
             <NavLink
               key={item.name}
@@ -126,7 +144,7 @@ export function Shell() {
                 className="w-full h-10 pl-10 pr-4 rounded-md border border-input bg-muted/30 text-sm flex items-center justify-between cursor-text hover:bg-muted/50 transition-colors text-muted-foreground"
                 onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
               >
-                <span>Search Wards, Tasks, Issues...</span>
+                <span>{t('Search Wards, Tasks, Issues...')}</span>
                 <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border bg-background px-1.5 font-mono text-[10px] font-medium opacity-100">
                   Ctrl K
                 </kbd>
@@ -135,9 +153,23 @@ export function Shell() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            <Button variant="ghost" size="icon" onClick={toggleLanguage} title={t('Language')}>
+              <Globe className="h-5 w-5 text-muted-foreground" />
+              <span className="sr-only">Toggle language</span>
+              <span className="absolute -bottom-1 -right-1 text-[9px] font-bold bg-primary text-primary-foreground rounded px-0.5">{i18n.language === 'en' ? 'EN' : 'BN'}</span>
+            </Button>
+            
+            <Button variant="ghost" size="icon" onClick={toggleTheme} title={t('Theme')}>
+              {theme === 'light' ? (
+                <Moon className="h-5 w-5 text-muted-foreground" />
+              ) : (
+                <Sun className="h-5 w-5 text-muted-foreground" />
+              )}
+            </Button>
+
             <Button variant="default" size="sm" className="gap-2 hidden sm:flex">
               <Plus className="h-4 w-4" />
-              <span>Quick Create</span>
+              <span>{t('Quick Create')}</span>
             </Button>
 
             <NavLink to="/notifications">
@@ -170,8 +202,13 @@ export function Shell() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-4 md:p-6 pb-20 md:pb-6">
-          <Outlet />
+        <main className="flex-1 overflow-auto p-4 md:p-6 pb-24 md:pb-6 flex flex-col">
+          <div className="flex-1">
+            <Outlet />
+          </div>
+          <footer className="mt-8 pt-4 text-center text-xs text-muted-foreground opacity-70 hover:opacity-100 transition-opacity">
+            Made by <a href="https://www.nextgensoftbd.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">NextGensoftBd</a>
+          </footer>
         </main>
       </div>
 
