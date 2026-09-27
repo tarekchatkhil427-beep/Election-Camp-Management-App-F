@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Download, FileText, MoreHorizontal, X, Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -13,123 +14,11 @@ import { toast } from 'sonner';
 import { useCampaignStore, Voter } from '@/store/campaignStore';
 import { EditVoterModal } from '@/components/voters/VoterTable';
 
-export const columns: ColumnDef<Voter, any>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <Button variant="ghost" className="p-0 font-semibold hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Name <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div className="font-medium whitespace-nowrap">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "wardName",
-    header: ({ column }) => (
-      <Button variant="ghost" className="p-0 font-semibold hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Ward <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "houseName",
-    header: ({ column }) => (
-      <Button variant="ghost" className="p-0 font-semibold hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        House <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "age",
-    header: ({ column }) => (
-      <Button variant="ghost" className="p-0 font-semibold hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Age <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "gender",
-    header: "Gender",
-  },
-  {
-    accessorKey: "party",
-    header: "Party",
-  },
-  {
-    accessorKey: "mobile",
-    header: "Mobile",
-  },
-  {
-    accessorKey: "contactVolunteer",
-    header: "Contact Volunteer",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      return <Badge variant={status === "Approved" ? "success" : status === "Pending" ? "warning" : "destructive"}>{status}</Badge>;
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row, table }) => {
-      const voter = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(voter.mobile)}>
-              Copy mobile number
-            </DropdownMenuItem>
-            {voter.status !== 'Approved' && (
-              <DropdownMenuItem onClick={() => (table.options.meta as any)?.onStatusChange(voter.id, 'Approved')}>
-                Approve Voter
-              </DropdownMenuItem>
-            )}
-            {voter.status !== 'Rejected' && (
-              <DropdownMenuItem onClick={() => (table.options.meta as any)?.onStatusChange(voter.id, 'Rejected')}>
-                Reject Voter
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem onClick={() => (table.options.meta as any)?.onEdit(voter)}>
-              Edit record
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive" onClick={() => (table.options.meta as any)?.onDelete(voter)}>
-              Delete record
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
+// Creating a wrapper component to use hooks inside columns if needed, or pass t from the main component
+// A common pattern is to pass `t` via the `meta` prop to columns, or we can just translate the headers dynamically.
 
 export default function VoterDatabase() {
+  const { t } = useTranslation();
   const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
   const { voters, wards, houses, updateVoter, deleteVoter } = useCampaignStore();
   const [editingVoter, setEditingVoter] = useState<any>(null);
@@ -139,6 +28,122 @@ export default function VoterDatabase() {
   const [genderFilter, setGenderFilter] = useState('');
   const [partyFilter, setPartyFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+
+  const columns: ColumnDef<Voter, any>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <Button variant="ghost" className="p-0 font-semibold hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          {t('Name')} <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => <div className="font-medium whitespace-nowrap">{row.getValue("name")}</div>,
+    },
+    {
+      accessorKey: "wardName",
+      header: ({ column }) => (
+        <Button variant="ghost" className="p-0 font-semibold hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          {t('Ward')} <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "houseName",
+      header: ({ column }) => (
+        <Button variant="ghost" className="p-0 font-semibold hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          {t('House')} <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "age",
+      header: ({ column }) => (
+        <Button variant="ghost" className="p-0 font-semibold hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          {t('Age')} <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "gender",
+      header: t('Gender') || "Gender",
+    },
+    {
+      accessorKey: "party",
+      header: t('Party') || "Party",
+    },
+    {
+      accessorKey: "mobile",
+      header: t('Mobile') || "Mobile",
+    },
+    {
+      accessorKey: "contactVolunteer",
+      header: t('Contact Volunteer') || "Contact Volunteer",
+    },
+    {
+      accessorKey: "status",
+      header: t('Status') || "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+        return <Badge variant={status === "Approved" ? "success" : status === "Pending" ? "warning" : "destructive"}>{t(status) || status}</Badge>;
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row, table }) => {
+        const voter = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(voter.mobile)}>
+                {t('Copy mobile number') || 'Copy mobile number'}
+              </DropdownMenuItem>
+              {voter.status !== 'Approved' && (
+                <DropdownMenuItem onClick={() => (table.options.meta as any)?.onStatusChange(voter.id, 'Approved')}>
+                  {t('Approve Voter') || 'Approve Voter'}
+                </DropdownMenuItem>
+              )}
+              {voter.status !== 'Rejected' && (
+                <DropdownMenuItem onClick={() => (table.options.meta as any)?.onStatusChange(voter.id, 'Rejected')}>
+                  {t('Reject Voter') || 'Reject Voter'}
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={() => (table.options.meta as any)?.onEdit(voter)}>
+                {t('Edit record') || 'Edit record'}
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive" onClick={() => (table.options.meta as any)?.onDelete(voter)}>
+                {t('Delete record') || 'Delete record'}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
 
   const enrichedVoters = voters.map(v => ({
     ...v,
@@ -173,8 +178,8 @@ export default function VoterDatabase() {
     <div className="max-w-[1600px] mx-auto pb-8 flex flex-col h-full">
       <div className="mb-6 flex justify-between items-end">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Voter Database</h1>
-          <p className="text-muted-foreground mt-1">Campaign-wide voter records and assignments.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">{t('Voter Database')}</h1>
+          <p className="text-muted-foreground mt-1">{t('Campaign-wide voter records and assignments.') || 'Campaign-wide voter records and assignments.'}</p>
         </div>
         <AddVoterGlobalModal />
       </div>
@@ -183,19 +188,19 @@ export default function VoterDatabase() {
         <DataTable 
           columns={columns} 
           data={filteredVoters} 
-          placeholder="Search by name or mobile..."
+          placeholder={t("Search by name or mobile...") || "Search by name or mobile..."}
           onSelectionChange={setSelectedRows}
           meta={{
             onEdit: setEditingVoter,
             onDelete: (voter: any) => {
-              if (confirm(`Are you sure you want to delete ${voter.name}?`)) {
+              if (confirm(`${t('Are you sure you want to delete')} ${voter.name}?`)) {
                 deleteVoter(voter.id);
-                toast.success(`${voter.name} deleted`);
+                toast.success(`${voter.name} ${t('deleted') || 'deleted'}`);
               }
             },
             onStatusChange: (id: string, status: string) => {
               updateVoter(id, { status: status as any });
-              toast.success(`Voter status updated to ${status}`);
+              toast.success(`${t('Voter status updated to')} ${t(status) || status}`);
             }
           }}
           toolbarFilters={

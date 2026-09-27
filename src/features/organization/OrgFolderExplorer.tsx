@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCampaignStore, Ward, House } from '@/store/campaignStore';
 import { ChevronRight, Home, MapPin, Folder, Plus, ArrowLeft, Trash2, Edit } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +17,7 @@ interface OrgFolderExplorerProps {
 }
 
 export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
+  const { t } = useTranslation();
   const { wards, houses, volunteers, voters, deleteWard, deleteHouse } = useCampaignStore();
   const [selectedWard, setSelectedWard] = useState<string | null>(null);
   const [selectedHouse, setSelectedHouse] = useState<string | null>(null);
@@ -82,7 +84,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
             </Button>
           )}
           <button onClick={resetWard} className={`hover:text-foreground transition-colors ${!selectedWard ? 'text-foreground' : ''}`}>
-            All Wards
+            {t('All Wards') || 'All Wards'}
           </button>
           {activeWard && (
             <>
@@ -124,7 +126,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg text-foreground group-hover:text-blue-600 transition-colors">{ward.name}</h3>
-                    <p className="text-sm text-muted-foreground font-medium">{ward.coordinator || 'Unassigned'}</p>
+                    <p className="text-sm text-muted-foreground font-medium">{ward.coordinator || t('Unassigned') || 'Unassigned'}</p>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
@@ -144,15 +146,15 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
 
               <div className="mt-auto grid grid-cols-3 gap-4 pt-4 border-t border-border/50">
                 <div>
-                  <div className="text-xs text-muted-foreground mb-1">Houses</div>
+                  <div className="text-xs text-muted-foreground mb-1">{t('Houses') || 'Houses'}</div>
                   <div className="font-bold text-lg">{houses.filter(h => h.wardId === ward.id).length}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground mb-1">Vols</div>
+                  <div className="text-xs text-muted-foreground mb-1">{t('Vols') || 'Vols'}</div>
                   <div className="font-bold text-lg">{volunteers.filter(v => v.wardId === ward.id).length}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground mb-1">Voters</div>
+                  <div className="text-xs text-muted-foreground mb-1">{t('Voters') || 'Voters'}</div>
                   <div className="font-bold text-lg">{voters.filter(v => v.wardId === ward.id).length}</div>
                 </div>
               </div>
@@ -167,7 +169,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
           {wardHouses.length === 0 ? (
             <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl">
               <Folder className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
-              <p>No houses found in this ward.</p>
+              <p>{t('No houses found in this ward.') || 'No houses found in this ward.'}</p>
             </div>
           ) : (
             wardHouses.map((house) => (
@@ -183,7 +185,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
                     </div>
                     <div>
                       <h3 className="font-bold text-lg text-foreground group-hover:text-indigo-600 transition-colors">{house.name}</h3>
-                      <p className="text-sm text-muted-foreground font-medium">{house.coordinator || 'Unassigned'}</p>
+                      <p className="text-sm text-muted-foreground font-medium">{house.coordinator || t('Unassigned') || 'Unassigned'}</p>
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
@@ -203,11 +205,11 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
 
                 <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-border/50">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">Volunteers</div>
+                    <div className="text-xs text-muted-foreground mb-1">{t('Volunteers') || 'Volunteers'}</div>
                     <div className="font-bold text-lg">{volunteers.filter(v => v.houseId === house.id).length}</div>
                   </div>
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">Voters</div>
+                    <div className="text-xs text-muted-foreground mb-1">{t('Voters') || 'Voters'}</div>
                     <div className="font-bold text-lg">{voters.filter(v => v.houseId === house.id).length}</div>
                   </div>
                 </div>
@@ -222,12 +224,12 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="flex flex-col bg-card/60 backdrop-blur-md border border-border rounded-2xl shadow-sm overflow-hidden border-t-4 border-t-emerald-500 min-h-[500px]">
             <div className="p-4 border-b border-border bg-muted/30 font-semibold flex justify-between items-center">
-              <span>Volunteers in {activeHouse.name}</span>
+              <span>{t('Volunteers in ') || 'Volunteers in '}{activeHouse.name}</span>
               <Badge variant="secondary">{houseVolunteers.length} Active</Badge>
             </div>
             <div className="p-4 flex-1 overflow-y-auto space-y-4 max-h-[600px]">
               {houseVolunteers.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">No volunteers found.</div>
+                <div className="text-center text-muted-foreground py-8">{t('No volunteers found.') || 'No volunteers found.'}</div>
               ) : houseVolunteers.map(vol => (
                 <VolunteerProfile 
                   key={vol.id} 
@@ -259,6 +261,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
 }
 
 function AddVoterModal({ wardId, houseId }: { wardId: string; houseId: string }) {
+  const { t } = useTranslation();
   const { addVoter } = useCampaignStore();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -285,7 +288,7 @@ function AddVoterModal({ wardId, houseId }: { wardId: string; houseId: string })
       age: parseInt(formData.age) || 30,
       party: formData.party,
       status: formData.status,
-      contactVolunteer: 'Unassigned',
+      contactVolunteer: t('Unassigned') || 'Unassigned',
     });
     
     toast.success(`${formData.name} added to Voter Database.`);
@@ -297,7 +300,7 @@ function AddVoterModal({ wardId, houseId }: { wardId: string; houseId: string })
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2 h-8 text-xs bg-background">
-          <Plus className="h-3 w-3" /> Add Voter
+          <Plus className="h-3 w-3" /> {t('Add Voter') || 'Add Voter'}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -357,6 +360,7 @@ function AddVoterModal({ wardId, houseId }: { wardId: string; houseId: string })
 }
 
 function AddHouseModal({ wardId }: { wardId: string }) {
+  const { t } = useTranslation();
   const { addHouse, addUser, wards } = useCampaignStore();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -377,7 +381,7 @@ function AddHouseModal({ wardId }: { wardId: string }) {
     addHouse({
       wardId,
       name: formData.name,
-      coordinator: formData.coordinatorName || 'Unassigned',
+      coordinator: formData.coordinatorName || t('Unassigned') || 'Unassigned',
       status: formData.status,
     });
 
@@ -404,7 +408,7 @@ function AddHouseModal({ wardId }: { wardId: string }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default" size="sm" className="gap-2 h-8 text-xs">
-          <Plus className="h-3 w-3" /> Add House
+          <Plus className="h-3 w-3" /> {t('Add House') || 'Add House'}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
