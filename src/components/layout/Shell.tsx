@@ -160,7 +160,7 @@ export function Shell() {
               title={t('Language')}
               className="font-bold text-xs w-9 h-9 px-0 text-muted-foreground hover:text-foreground"
             >
-              {i18n.language === 'en' ? 'EN' : 'BN'}
+              {i18n.language === 'en' ? 'BN' : 'EN'}
             </Button>
             
             <Button variant="ghost" size="icon" onClick={toggleTheme} title={t('Theme')}>
