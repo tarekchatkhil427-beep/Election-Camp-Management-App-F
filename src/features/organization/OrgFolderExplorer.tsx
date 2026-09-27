@@ -318,7 +318,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
           <div className="flex flex-col bg-card/60 backdrop-blur-md border border-border rounded-2xl shadow-sm overflow-hidden border-t-4 border-t-purple-500 min-h-[500px]">
             <div className="p-4 border-b border-border bg-muted/30 font-semibold flex justify-between items-center">
               <span>Voters Database — {activeHouse.name}</span>
-              {mode === 'view' && <AddVoterModal wardId={activeHouse.wardId} houseId={activeHouse.id} />}
+              <AddVoterModal wardId={activeHouse.wardId} houseId={activeHouse.id} />
             </div>
             <div className="p-4 flex-1 overflow-y-auto max-h-[600px]">
               <VoterTable houseId={activeHouse.id} />
