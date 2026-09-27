@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCampaignStore, Ward, House } from '@/store/campaignStore';
-import { ChevronRight, Home, MapPin, Folder, Plus, ArrowLeft, Trash2, Edit } from 'lucide-react';
+import { Copy, PhoneCall, UserCircle2, ChevronRight, Home, MapPin, Folder, Plus, ArrowLeft, Trash2, Edit } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { VolunteerProfile } from '@/components/ui/VolunteerProfile';
@@ -14,6 +14,80 @@ import { toast } from 'sonner';
 
 interface OrgFolderExplorerProps {
   mode?: 'admin' | 'view';
+}
+
+
+
+
+function CompactVolunteerCard({ volunteer, onEdit, onDelete }: any) {
+  const [open, setOpen] = useState(false);
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(volunteer.phone);
+    toast.success('Phone copied!');
+  };
+
+  return (
+    <>
+      <div 
+        onClick={() => setOpen(true)}
+        className="flex flex-col items-center justify-center p-2 sm:p-4 border border-border rounded-xl bg-card hover:bg-muted/50 cursor-pointer transition-all text-center gap-1 shadow-sm"
+      >
+        <UserCircle2 className="h-8 w-8 sm:h-12 sm:w-12 text-primary/80 mb-1" />
+        <span className="font-semibold text-[10px] sm:text-sm truncate w-full">{volunteer.name}</span>
+        <span className="text-[8px] sm:text-xs text-muted-foreground truncate w-full">{volunteer.role}</span>
+        <div className="mt-1" onClick={handleCopy}>
+           <Badge variant="outline" className="text-[9px] py-0 px-1 bg-primary/5 hover:bg-primary/10 border-primary/20 cursor-pointer">
+             <PhoneCall className="h-2 w-2 mr-1" /> Call
+           </Badge>
+        </div>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Volunteer Details</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4 py-4">
+            <UserCircle2 className="h-20 w-20 text-muted-foreground" />
+            <div className="text-center">
+              <h2 className="text-2xl font-bold">{volunteer.name}</h2>
+              <p className="text-primary font-medium">{volunteer.role}</p>
+            </div>
+            
+            <div className="w-full space-y-3 mt-4">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border">
+                <div className="flex items-center gap-3">
+                  <div className="bg-background p-2 rounded-full shadow-sm"><PhoneCall className="h-4 w-4 text-primary" /></div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Phone Number</p>
+                    <p className="font-medium text-sm">{volunteer.phone}</p>
+                  </div>
+                </div>
+                <Button size="sm" variant="outline" onClick={handleCopy}>
+                  <Copy className="h-3 w-3 mr-2" /> Copy
+                </Button>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border">
+                <div className="flex items-center gap-3">
+                  <div className="bg-background p-2 rounded-full shadow-sm"><MapPin className="h-4 w-4 text-primary" /></div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Status</p>
+                    <p className="font-medium text-sm">{volunteer.status}</p>
+                  </div>
+                </div>
+                <Badge variant={volunteer.status === 'Active' ? 'success' : 'secondary'}>{volunteer.status}</Badge>
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="flex gap-2 justify-end">
+            {onEdit && <Button variant="outline" onClick={() => { setOpen(false); onEdit(); }}><Edit className="h-4 w-4 mr-2"/> Edit</Button>}
+            {onDelete && <Button variant="destructive" onClick={() => { setOpen(false); onDelete(); }}><Trash2 className="h-4 w-4 mr-2"/> Delete</Button>}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }
 
 export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
@@ -117,7 +191,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
             <div 
               key={ward.id}
               onClick={() => setSelectedWard(ward.id)}
-              className="group cursor-pointer relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-md border border-border shadow-sm hover:shadow-md hover:bg-card/90 transition-all duration-200 border-l-4 border-l-blue-500 p-6 flex flex-col"
+              className="group cursor-pointer relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-md border border-border shadow-sm hover:shadow-md hover:bg-card/90 transition-all duration-200 border-l-4 border-l-blue-500 p-3 sm:p-6 flex flex-col"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -125,7 +199,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
                     <MapPin className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg text-foreground group-hover:text-blue-600 transition-colors">{ward.name}</h3>
+                    <h3 className="font-bold text-[11px] sm:text-lg text-foreground group-hover:text-blue-600 transition-colors">{ward.name}</h3>
                     <p className="text-sm text-muted-foreground font-medium">{ward.coordinator || t('Unassigned') || 'Unassigned'}</p>
                   </div>
                 </div>
@@ -147,15 +221,15 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
               <div className="mt-auto grid grid-cols-3 gap-4 pt-4 border-t border-border/50">
                 <div>
                   <div className="text-xs text-muted-foreground mb-1">{t('Houses') || 'Houses'}</div>
-                  <div className="font-bold text-lg">{houses.filter(h => h.wardId === ward.id).length}</div>
+                  <div className="font-bold text-[11px] sm:text-lg">{houses.filter(h => h.wardId === ward.id).length}</div>
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground mb-1">{t('Vols') || 'Vols'}</div>
-                  <div className="font-bold text-lg">{volunteers.filter(v => v.wardId === ward.id).length}</div>
+                  <div className="font-bold text-[11px] sm:text-lg">{volunteers.filter(v => v.wardId === ward.id).length}</div>
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground mb-1">{t('Voters') || 'Voters'}</div>
-                  <div className="font-bold text-lg">{voters.filter(v => v.wardId === ward.id).length}</div>
+                  <div className="font-bold text-[11px] sm:text-lg">{voters.filter(v => v.wardId === ward.id).length}</div>
                 </div>
               </div>
             </div>
@@ -165,7 +239,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
 
       {/* Level 2: Houses */}
       {selectedWard && !selectedHouse && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in zoom-in-95 duration-200">
+        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6 animate-in fade-in zoom-in-95 duration-200">
           {wardHouses.length === 0 ? (
             <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl">
               <Folder className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
@@ -176,7 +250,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
               <div 
                 key={house.id}
                 onClick={() => setSelectedHouse(house.id)}
-                className="group cursor-pointer relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-md border border-border shadow-sm hover:shadow-md hover:bg-card/90 transition-all duration-200 border-l-4 border-l-indigo-500 p-6 flex flex-col"
+                className="group cursor-pointer relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-md border border-border shadow-sm hover:shadow-md hover:bg-card/90 transition-all duration-200 border-l-4 border-l-indigo-500 p-3 sm:p-6 flex flex-col"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -184,7 +258,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
                       <Home className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-foreground group-hover:text-indigo-600 transition-colors">{house.name}</h3>
+                      <h3 className="font-bold text-[11px] sm:text-lg text-foreground group-hover:text-indigo-600 transition-colors">{house.name}</h3>
                       <p className="text-sm text-muted-foreground font-medium">{house.coordinator || t('Unassigned') || 'Unassigned'}</p>
                     </div>
                   </div>
@@ -206,11 +280,11 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
                 <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-border/50">
                   <div>
                     <div className="text-xs text-muted-foreground mb-1">{t('Volunteers') || 'Volunteers'}</div>
-                    <div className="font-bold text-lg">{volunteers.filter(v => v.houseId === house.id).length}</div>
+                    <div className="font-bold text-[11px] sm:text-lg">{volunteers.filter(v => v.houseId === house.id).length}</div>
                   </div>
                   <div>
                     <div className="text-xs text-muted-foreground mb-1">{t('Voters') || 'Voters'}</div>
-                    <div className="font-bold text-lg">{voters.filter(v => v.houseId === house.id).length}</div>
+                    <div className="font-bold text-[11px] sm:text-lg">{voters.filter(v => v.houseId === house.id).length}</div>
                   </div>
                 </div>
               </div>
