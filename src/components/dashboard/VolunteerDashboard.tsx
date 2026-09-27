@@ -26,7 +26,7 @@ export function VolunteerDashboard() {
         </div>
       </div>
 
-      <div className="grid gap-2 sm:gap-4 grid-cols-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-2 sm:gap-4 grid-cols-4 sm:grid-cols-4 lg:grid-cols-4">
         <StatCard 
           title="My Tasks" 
           value="2 Pending" 
