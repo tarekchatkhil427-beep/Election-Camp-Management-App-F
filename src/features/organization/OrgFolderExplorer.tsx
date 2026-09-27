@@ -186,21 +186,21 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
 
       {/* Level 1: Wards */}
       {!selectedWard && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6">
           {wards.map((ward) => (
             <div 
               key={ward.id}
               onClick={() => setSelectedWard(ward.id)}
-              className="group cursor-pointer relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-md border border-border shadow-sm hover:shadow-md hover:bg-card/90 transition-all duration-200 border-l-4 border-l-blue-500 p-3 sm:p-6 flex flex-col"
+              className="group cursor-pointer relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-md border border-border shadow-sm hover:shadow-md hover:bg-card/90 transition-all duration-200 border-l-4 border-l-blue-500 p-2 sm:p-4 flex flex-col"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600">
-                    <MapPin className="h-5 w-5" />
+                  <div className="h-7 w-7 sm:h-10 sm:w-10 rounded-full shrink-0 bg-blue-500/10 flex items-center justify-center text-blue-600">
+                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                   <div>
                     <h3 className="font-bold text-[11px] sm:text-lg text-foreground group-hover:text-blue-600 transition-colors">{ward.name}</h3>
-                    <p className="text-sm text-muted-foreground font-medium">{ward.coordinator || t('Unassigned') || 'Unassigned'}</p>
+                    <p className="text-[10px] sm:text-sm text-muted-foreground font-medium truncate">{ward.coordinator || t('Unassigned') || 'Unassigned'}</p>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
@@ -239,7 +239,7 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
 
       {/* Level 2: Houses */}
       {selectedWard && !selectedHouse && (
-        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6 animate-in fade-in zoom-in-95 duration-200">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6">
           {wardHouses.length === 0 ? (
             <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl">
               <Folder className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
@@ -250,16 +250,16 @@ export function OrgFolderExplorer({ mode = 'admin' }: OrgFolderExplorerProps) {
               <div 
                 key={house.id}
                 onClick={() => setSelectedHouse(house.id)}
-                className="group cursor-pointer relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-md border border-border shadow-sm hover:shadow-md hover:bg-card/90 transition-all duration-200 border-l-4 border-l-indigo-500 p-3 sm:p-6 flex flex-col"
+                className="group cursor-pointer relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-md border border-border shadow-sm hover:shadow-md hover:bg-card/90 transition-all duration-200 border-l-4 border-l-indigo-500 p-2 sm:p-4 flex flex-col"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-600">
-                      <Home className="h-5 w-5" />
+                    <div className="h-7 w-7 sm:h-10 sm:w-10 rounded-full shrink-0 bg-indigo-500/10 flex items-center justify-center text-indigo-600">
+                      <Home className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                     <div>
                       <h3 className="font-bold text-[11px] sm:text-lg text-foreground group-hover:text-indigo-600 transition-colors">{house.name}</h3>
-                      <p className="text-sm text-muted-foreground font-medium">{house.coordinator || t('Unassigned') || 'Unassigned'}</p>
+                      <p className="text-[10px] sm:text-sm text-muted-foreground font-medium truncate">{house.coordinator || t('Unassigned') || 'Unassigned'}</p>
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
