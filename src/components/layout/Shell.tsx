@@ -153,10 +153,14 @@ export function Shell() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <Button variant="ghost" size="icon" onClick={toggleLanguage} title={t('Language')}>
-              <Globe className="h-5 w-5 text-muted-foreground" />
-              <span className="sr-only">Toggle language</span>
-              <span className="absolute -bottom-1 -right-1 text-[9px] font-bold bg-primary text-primary-foreground rounded px-0.5">{i18n.language === 'en' ? 'EN' : 'BN'}</span>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={toggleLanguage} 
+              title={t('Language')}
+              className="font-bold text-xs w-9 h-9 px-0 text-muted-foreground hover:text-foreground"
+            >
+              {i18n.language === 'en' ? 'EN' : 'BN'}
             </Button>
             
             <Button variant="ghost" size="icon" onClick={toggleTheme} title={t('Theme')}>
